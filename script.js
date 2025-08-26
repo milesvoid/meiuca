@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- ESTADO DO JOGO ---
   let selectedItems = [];
   let mistakes = 0;
-  const MAX_MISTAKES = 4;
+  const MAX_MISTAKES = 10;
   let todayPuzzle;
   let allPuzzleItems = [];
 
