@@ -4,27 +4,27 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       groups: [
         {
-          category: "MARCARAM GOLS EM FINAIS DE LIBERTADORES",
-          items: ["Aílton", "Pedro Rocha", "Neymar"],
+          category: "MARCARAM GOLS EM FINAIS DE COPA AMÉRICA",
+          items: ["Jair Rosa Pinto", "Edmundo", "Adriano"],
           difficulty: 0,
         },
         {
-          category: "CAMPEÕES PELA PORTUGUESA (SP)",
-          items: ["Basílio", "Edno", "Boquita"],
+          category: "JOGADORES QUE VESTIRAM A 10 DO BRASIL",
+          items: ["Pelé", "Raí", "Rivaldo"],
           difficulty: 1,
         },
         {
-          category: "ARTILHEIROS DO CAMPEONATO BAIANO",
-          items: ["Cláudio Adão", "Neto Baiano", "Beijoca"],
+          category: "JOGADORES ALTERNATIVOS QUE JOGARAM NA SELEÇÃO",
+          items: ["Afonso Alves", "Leomar", "Nadson"],
           difficulty: 2,
         },
         {
-          category: "MARCARAM MAIS DE 4 GOLS EM UMA PARTIDA DO BRASILEIRÃO",
-          items: ["Acosta", "Dodô", "Magno Alves"],
+          category: "JOGADORES QUE JÁ USARAM A BRAÇADEIRA DE CAPITÃO",
+          items: ["Carlos Alberto Torres", "Dunga", "Lucio"],
           difficulty: 3,
         },
       ],
-      decoys: ["Zico", "Carlos Tévez", "Asprilla", "Júnior Baiano"],
+      decoys: ["Alex Cabeção", "Ronaldo Fenômeno", "Mauro Galvão", "Euller"],
     },
     // Adicione mais puzzles neste formato
   ];
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- ESTADO DO JOGO ---
   let selectedItems = [];
   let mistakes = 0;
-  const MAX_MISTAKES = 10;
+  const MAX_MISTAKES = 4;
   let todayPuzzle;
   let allPuzzleItems = [];
 
