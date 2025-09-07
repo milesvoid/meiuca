@@ -9,22 +9,22 @@ document.addEventListener("DOMContentLoaded", () => {
           difficulty: 0,
         },
         {
-          category: "JOGADORES QUE VESTIRAM A 10 DO BRASIL",
+          category: "JOGADORES QUE VESTIRAM A 10 DO BRASIL EM COPAS",
           items: ["Pelé", "Raí", "Rivaldo"],
           difficulty: 1,
         },
         {
-          category: "JOGADORES QUE MAIS ATUARAM PELO BRASIL",
-          items: ["Cafú", "Roberto Carlos", "Neymar"],
+          category: "lATERAIS DIREITOS DO BRASIL EM COPAS",
+          items: ["Cafú", "Djalma Santos", "Leandro"],
           difficulty: 2,
         },
         {
-          category: "JOGADORES QUE JÁ USARAM A BRAÇADEIRA DE CAPITÃO",
+          category: "JOGADORES QUE JÁ USARAM A BRAÇADEIRA DE CAPITÃO EM COPAS",
           items: ["Carlos Alberto Torres", "Dunga", "Lúcio"],
           difficulty: 3,
         },
       ],
-      decoys: ["Alex Cabeção", "Branco", "Nelinho", "Juninho Pernambucano"],
+      decoys: ["Alex Cabeção", "Branco", "Heleno de Freitas", "Juninho Pernambucano"],
     },
     // Adicione mais puzzles neste formato
   ];
