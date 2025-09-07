@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- DADOS DO PUZZLE (ATUALIZADO PARA 4 GRUPOS DE 3 + 4 PEGADINHAS) ---
+  // --- DADOS DO PUZZLE ---
   const puzzles = [
     {
       groups: [
         {
-          category: "MARCARAM GOLS EM FINAIS DE COPA AMÉRICA",
-          items: ["Jair Rosa Pinto", "Edmundo", "Adriano"],
+          category: "MARCARAM GOLS EM FINAIS DE COPA DO MUNDO",
+          items: ["Vavá", "Gérson", "Ronaldo"],
           difficulty: 0,
         },
         {
@@ -14,17 +14,17 @@ document.addEventListener("DOMContentLoaded", () => {
           difficulty: 1,
         },
         {
-          category: "JOGADORES ALTERNATIVOS QUE JOGARAM NA SELEÇÃO",
-          items: ["Afonso Alves", "Leomar", "Nadson"],
+          category: "JOGADORES QUE MAIS ATUARAM PELO BRASIL",
+          items: ["Cafú", "Roberto Carlos", "Neymar"],
           difficulty: 2,
         },
         {
           category: "JOGADORES QUE JÁ USARAM A BRAÇADEIRA DE CAPITÃO",
-          items: ["Carlos Alberto Torres", "Dunga", "Lucio"],
+          items: ["Carlos Alberto Torres", "Dunga", "Lúcio"],
           difficulty: 3,
         },
       ],
-      decoys: ["Alex Cabeção", "Ronaldo Fenômeno", "Mauro Galvão", "Euller"],
+      decoys: ["Alex Cabeção", "Branco", "Nelinho", "Juninho Pernambucano"],
     },
     // Adicione mais puzzles neste formato
   ];
@@ -39,85 +39,43 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultsTitle = document.getElementById("results-title");
   const resultsMessage = document.getElementById("results-message");
   const resultsGrid = document.getElementById("results-grid");
-  const countdownTimer = document.getElementById("countdown-timer");
+  const faqButton = document.getElementById("faq-button");
+  const faqModal = document.getElementById("faq-modal");
 
   // --- ESTADO DO JOGO ---
   let selectedItems = [];
   let mistakes = 0;
-  const MAX_MISTAKES = 4;
-  let todayPuzzle;
+  const MAX_MISTAKES = 10; // Ajustado para o número de bolinhas
+  let currentPuzzle;
   let allPuzzleItems = [];
 
-  // --- LÓGICA DO PUZZLE DIÁRIO (permanece a mesma, com reset às 10h) ---
-  function getPuzzleDate() {
-    const now = new Date();
-    if (now.getHours() < 10) {
-      const yesterday = new Date(now);
-      yesterday.setDate(now.getDate() - 1);
-      return yesterday;
-    }
-    return now;
-  }
-
-  function getDailyPuzzle() {
-    const startDate = new Date("2025-01-01");
-    const puzzleDate = getPuzzleDate();
-    const diffTime = Math.abs(puzzleDate - startDate);
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    const puzzleIndex = diffDays % puzzles.length;
-    return puzzles[puzzleIndex];
-  }
-
-  // --- LÓGICA DE ARMAZENAMENTO LOCAL (permanece a mesma) ---
-  function getTodayStorageKey() {
-    const puzzleDate = getPuzzleDate();
-    return `footballConnections-${puzzleDate.getFullYear()}-${puzzleDate.getMonth() + 0}-${puzzleDate.getDate()}`;
-  }
-
-  function saveGameState(state) {
-    localStorage.setItem(getTodayStorageKey(), JSON.stringify(state));
-  }
-
-  function loadGameState() {
-    const storedState = localStorage.getItem(getTodayStorageKey());
-    return storedState ? JSON.parse(storedState) : null;
+  // --- FUNÇÃO PARA PEGAR UM PUZZLE ALEATÓRIO ---
+  function getRandomPuzzle() {
+    const randomIndex = Math.floor(Math.random() * puzzles.length);
+    return puzzles[randomIndex];
   }
 
   // --- INICIALIZAÇÃO DO JOGO ---
   function initGame() {
-    todayPuzzle = getDailyPuzzle();
-    const savedState = loadGameState();
+    // Reseta o estado do jogo
+    selectedItems = [];
+    mistakes = 0;
+    solvedGroupsContainer.innerHTML = "";
 
-    if (savedState && savedState.completed) {
-      displayResults(savedState.isWin, savedState.solvedGroupsData);
-      startCountdown();
+    // Garante que os containers certos estão visíveis/escondidos
+    document.getElementById("game-container").style.display = "flex";
+    resultsModal.style.display = "none";
+
+    currentPuzzle = getRandomPuzzle();
+    if (!currentPuzzle) {
+      console.error("Nenhum puzzle foi encontrado.");
       return;
     }
 
-    // Combina itens dos grupos e as pegadinhas
-    const groupItems = todayPuzzle.groups.flatMap((group) => group.items);
-    allPuzzleItems = [...groupItems, ...todayPuzzle.decoys];
+    const groupItems = currentPuzzle.groups.flatMap((group) => group.items);
+    allPuzzleItems = [...groupItems, ...currentPuzzle.decoys];
 
-    if (savedState) {
-      restoreGameState(savedState);
-    } else {
-      renderGrid(allPuzzleItems);
-    }
-
-    updateMistakesDisplay();
-    addEventListeners();
-  }
-
-  function restoreGameState(state) {
-    mistakes = state.mistakes;
-    const solvedItems = state.solvedGroupsData.flatMap((g) => g.items);
-    const remainingItems = allPuzzleItems.filter(
-      (item) => !solvedItems.includes(item),
-    );
-    renderGrid(remainingItems);
-    state.solvedGroupsData.forEach((groupData) =>
-      displaySolvedGroup(groupData),
-    );
+    renderGrid(allPuzzleItems);
     updateMistakesDisplay();
   }
 
@@ -132,27 +90,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function addEventListeners() {
-    shuffleButton.addEventListener("click", handleShuffle);
-    submitButton.addEventListener("click", handleSubmit);
-  }
-
-  // --- LÓGICA DO JOGO (ATUALIZADA PARA 3 ITENS) ---
+  // --- LÓGICA DO JOGO ---
   function handleItemClick(event) {
     const clickedItem = event.target;
     const itemText = clickedItem.textContent;
 
-    if (selectedItems.includes(itemText)) {
+    if (clickedItem.classList.contains("selected")) {
       selectedItems = selectedItems.filter((item) => item !== itemText);
       clickedItem.classList.remove("selected");
     } else {
-      // Alterado para permitir a seleção de no máximo 3 itens
       if (selectedItems.length < 3) {
         selectedItems.push(itemText);
         clickedItem.classList.add("selected");
       }
     }
-    // Alterado para habilitar o botão quando 3 itens são selecionados
     submitButton.disabled = selectedItems.length !== 3;
   }
 
@@ -168,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleSubmit() {
     if (selectedItems.length !== 3) return;
 
-    const foundGroup = todayPuzzle.groups.find((group) =>
+    const foundGroup = currentPuzzle.groups.find((group) =>
       arraysEqual(group.items.sort(), selectedItems.sort()),
     );
 
@@ -179,11 +130,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     selectedItems = [];
-    Array.from(grid.children).forEach((child) =>
-      child.classList.remove("selected"),
-    );
+    document
+      .querySelectorAll(".grid-item.selected")
+      .forEach((el) => el.classList.remove("selected"));
     submitButton.disabled = true;
-    saveCurrentProgress();
   }
 
   function handleCorrectGuess(group) {
@@ -195,9 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderGrid(remainingItems);
 
-    const numSolved = solvedGroupsContainer.children.length;
-    // Condição de vitória: encontrar todos os 4 grupos
-    if (numSolved === 4) {
+    if (solvedGroupsContainer.children.length === 4) {
       endGame(true);
     }
   }
@@ -210,8 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     groupElement.innerHTML = `
             <div class="solved-category">${groupData.category}</div>
-            <div class="solved-items">${groupData.items.join(", ")}</div>
-        `;
+            <div class="solved-items">${groupData.items.join(", ")}</div>`;
     solvedGroupsContainer.appendChild(groupElement);
   }
 
@@ -229,31 +176,18 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateMistakesDisplay() {
     const dots = mistakesCounter.querySelectorAll(".mistake-dot");
     dots.forEach((dot, index) => {
-      if (index < mistakes) {
-        dot.classList.add("used");
-      } else {
-        dot.classList.remove("used");
-      }
+      dot.classList.toggle("used", index < mistakes);
     });
   }
 
   function endGame(isWin) {
-    const finalState = {
-      completed: true,
-      isWin: isWin,
-      mistakes: mistakes,
-      solvedGroupsData: todayPuzzle.groups,
-    };
-    saveGameState(finalState);
-    displayResults(isWin, todayPuzzle.groups);
-    startCountdown();
+    displayResults(isWin, currentPuzzle.groups);
   }
 
   function displayResults(isWin, groupsData) {
     document.getElementById("game-container").style.display = "none";
-    document.querySelector("header p").style.display = "none";
 
-    resultsTitle.textContent = isWin ? "Parabéns!" : "Na próxima vez!";
+    resultsTitle.textContent = isWin ? "Parabéns!" : "Não foi desta vez!";
     resultsMessage.textContent = isWin
       ? "Você encontrou todas as conexões!"
       : "Aqui estão as respostas corretas:";
@@ -267,56 +201,20 @@ document.addEventListener("DOMContentLoaded", () => {
       );
       groupElement.innerHTML = `
                 <div class="solved-category">${group.category}</div>
-                <div class="solved-items">${group.items.join(", ")}</div>
-            `;
+                <div class="solved-items">${group.items.join(", ")}</div>`;
       resultsGrid.appendChild(groupElement);
     });
 
+    // Adiciona um botão de "Jogar Novamente" se ele não existir
+    if (!document.getElementById("play-again-button")) {
+      const playAgainButton = document.createElement("button");
+      playAgainButton.textContent = "Jogar Novamente";
+      playAgainButton.id = "play-again-button";
+      playAgainButton.onclick = initGame; // Reinicia o jogo ao clicar
+      resultsModal.querySelector(".modal-content").appendChild(playAgainButton);
+    }
+
     resultsModal.style.display = "flex";
-  }
-
-  function saveCurrentProgress() {
-    const solvedGroupsData = Array.from(solvedGroupsContainer.children).map(
-      (child) => {
-        const category = child.querySelector(".solved-category").textContent;
-        return todayPuzzle.groups.find((g) => g.category === category);
-      },
-    );
-
-    const state = {
-      completed: false,
-      mistakes: mistakes,
-      solvedGroupsData: solvedGroupsData,
-    };
-    saveGameState(state);
-  }
-
-  function startCountdown() {
-    const interval = setInterval(() => {
-      const now = new Date();
-      const nextPuzzleTime = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() + 1,
-        10,
-        0,
-        0,
-      );
-      const distance = nextPuzzleTime - now;
-
-      const hours = Math.floor(
-        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-      );
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      countdownTimer.textContent = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
-
-      if (distance < 0) {
-        clearInterval(interval);
-        countdownTimer.textContent = "Novo desafio disponível!";
-      }
-    }, 1000);
   }
 
   // --- FUNÇÕES AUXILIARES ---
@@ -329,16 +227,25 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function arraysEqual(a, b) {
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) return false;
-    }
-    return true;
+    return a.length === b.length && a.every((val, index) => val === b[index]);
   }
 
-  function padZero(num) {
-    return num < 10 ? `0${num}` : num;
-  }
+  // --- LÓGICA DO MODAL DE FAQ ---
+  const closeFaqButton = faqModal.querySelector(".close-button");
+  faqButton.addEventListener("click", () => (faqModal.style.display = "flex"));
+  closeFaqButton.addEventListener(
+    "click",
+    () => (faqModal.style.display = "none"),
+  );
+  faqModal.addEventListener("click", (event) => {
+    if (event.target === faqModal) {
+      faqModal.style.display = "none";
+    }
+  });
+
+  // --- ADICIONA EVENT LISTENERS GERAIS ---
+  shuffleButton.addEventListener("click", handleShuffle);
+  submitButton.addEventListener("click", handleSubmit);
 
   // --- INICIA O JOGO ---
   initGame();
