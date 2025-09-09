@@ -14,12 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
           difficulty: 1,
         },
         {
-          category: "Copa de 1962 - A Copa do "gênio das pernas tortas. e o bi mundial"",
+          category: "Copa de 1962 - A Copa do gênio das pernas tortas. e o bi mundial",
           items: ["Garrincha", "Zózimo", "Djalma Santos"],
           difficulty: 2,
         },
         {
-          category: "Copa de 1970 - Tri no México com o ataque "Tospericargerja".",
+          category: "Copa de 1970 - Tri no México com o ataque Tospericargerja.",
           items: ["Carlos Alberto Torres", "Jairzinho", "Emerson Leão"],
           difficulty: 3,
         },
