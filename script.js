@@ -4,27 +4,27 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       groups: [
         {
-          category: "MARCARAM GOLS EM FINAIS DE COPA DO MUNDO",
-          items: ["Vavá", "Gérson", "Ronaldo"],
+          category: "Copa de 2002 - Brasil Pentacampeão",
+          items: ["Anderson Polga", "Marcos", "Ronaldo"],
           difficulty: 0,
         },
         {
-          category: "JOGADORES QUE VESTIRAM A 10 DO BRASIL EM COPAS",
-          items: ["Pelé", "Raí", "Rivaldo"],
+          category: "Copa de 1982 - A melhor seleção da história que foi eliminada pela Itália",
+          items: ["Éder", "Leandro", "Sócrates"],
           difficulty: 1,
         },
         {
-          category: "lATERAIS DIREITOS DO BRASIL EM COPAS",
-          items: ["Cafú", "Djalma Santos", "Leandro"],
+          category: "Copa de 1962 - A Copa do "gênio das pernas tortas. e o bi mundial"",
+          items: ["Garrincha", "Zózimo", "Djalma Santos"],
           difficulty: 2,
         },
         {
-          category: "JOGADORES QUE JÁ USARAM A BRAÇADEIRA DE CAPITÃO EM COPAS",
-          items: ["Carlos Alberto Torres", "Dunga", "Lúcio"],
+          category: "Copa de 1970 - Tri no México com o ataque "Tospericargerja".",
+          items: ["Carlos Alberto Torres", "Jairzinho", "Emerson Leão"],
           difficulty: 3,
         },
       ],
-      decoys: ["Alex Cabeção", "Branco", "Heleno de Freitas", "Juninho Pernambucano"],
+      decoys: ["Alex Cabeção", "Neto", "Heleno de Freitas", "Leonidas da Silva"],
     },
     // Adicione mais puzzles neste formato
   ];
